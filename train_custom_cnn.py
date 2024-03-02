@@ -15,7 +15,7 @@ kernel_size = (3, 3)
 batch_size = 128
 epochs = 30
 
-# Directorios de entrenamiento y prueba
+# Directorios de entrenamiento y prueba. Datos usados: https://www.kaggle.com/datasets/sartajbhuvaji/brain-tumor-classification-mri
 test_dir = 'Testing'
 train_dir = 'Training'
 
@@ -23,12 +23,12 @@ train_dir = 'Training'
 labels = ['glioma_tumor', 'meningioma_tumor', 'no_tumor', 'pituitary_tumor']
 
 datagen = ImageDataGenerator(
-    rotation_range=20,      # Rango de rotación aleatoria (en grados)
-    width_shift_range=0.1,  # Rango de desplazamiento horizontal aleatorio (como fracción del ancho total)
-    height_shift_range=0.1, # Rango de desplazamiento vertical aleatorio (como fracción de la altura total)
-    zoom_range=0.1,         # Rango de zoom aleatorio
-    horizontal_flip=True,   # Volteo horizontal aleatorio
-    fill_mode='nearest'     # Estrategia de relleno para los píxeles fuera de los límites de la imagen
+    rotation_range=20,     
+    width_shift_range=0.1,  
+    height_shift_range=0.1, 
+    zoom_range=0.1,         
+    horizontal_flip=True,   
+    fill_mode='nearest'     
 )
 
 def load_data(path, labels):

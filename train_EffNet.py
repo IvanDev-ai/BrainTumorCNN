@@ -6,13 +6,21 @@ from keras.applications import EfficientNetB0
 from keras.callbacks import TensorBoard, ReduceLROnPlateau, ModelCheckpoint
 from keras.models import Model
 from keras.layers import  GlobalAveragePooling2D, Dense, Dropout
+
+# Parámetros ajustados
+img_size = 150
+batch_size = 32
+epochs = 12
+
+# Directorios de entrenamiento y prueba. Datos usados: https://www.kaggle.com/datasets/sartajbhuvaji/brain-tumor-classification-mri
 test_dir = 'Testing'
 train_dir = 'Training'
+
+# Etiquetas de las clases
 labels = ['glioma_tumor','meningioma_tumor','no_tumor','pituitary_tumor']
 
 
 def  load_data(path, labels):
-    img_size= 150
     x=[]
     y=[]
     for i in labels:
@@ -32,8 +40,7 @@ def OneHotEncoding(labels,y):
     return tf.keras.utils.to_categorical(y_new)
 
 def  create_model():
-    image_size = 150
-    effnet = EfficientNetB0(weights='imagenet',include_top=False,input_shape=(image_size,image_size,3))
+    effnet = EfficientNetB0(weights='imagenet',include_top=False,input_shape=(img_size,img_size,3))
     model = effnet.output
     model = GlobalAveragePooling2D()(model)
     model = Dropout(rate=0.5)(model)
@@ -49,7 +56,7 @@ def  train_model(X_train, Y_train):
     tensorboard = TensorBoard(log_dir='./logs')
     checkpoint = ModelCheckpoint("BrainTumorCNN",monitor="val_accuracy",save_best_only=True,mode='auto',verbose=1)
     reduce_lr = ReduceLROnPlateau(monitor="val_accuracy",factor= 0.3, patience= 2,min_delta=0.001,mode="auto", verbose= True)
-    history = model.fit(X_train,Y_train,batch_size=32,validation_split=0.1,epochs=12,verbose=1, callbacks=[tensorboard,checkpoint,reduce_lr])
+    history = model.fit(X_train,Y_train,batch_size=batch_size,validation_split=0.1,epochs=epochs,verbose=1, callbacks=[tensorboard,checkpoint,reduce_lr])
     loss, accuracy = model.evaluate(x_test, y_test)
     print("Loss:", loss)
     print("Accuracy:", accuracy)
