@@ -9,12 +9,12 @@ from keras.layers import  GlobalAveragePooling2D, Dense, Dropout
 
 # Parámetros ajustados
 img_size = 150
-batch_size = 32
-epochs = 12
+batch_size = 64
+epochs = 15
 
 # Directorios de entrenamiento y prueba. Datos usados: https://www.kaggle.com/datasets/sartajbhuvaji/brain-tumor-classification-mri
-test_dir = 'Testing'
-train_dir = 'Training'
+test_dir = 'C:/Users/ivanf/Desktop/Tests/BrainTumorCNN/Testing'
+train_dir = 'C:/Users/ivanf/Desktop/Tests/BrainTumorCNN/Training'
 
 # Etiquetas de las clases
 labels = ['glioma_tumor','meningioma_tumor','no_tumor','pituitary_tumor']
@@ -51,13 +51,13 @@ def  create_model():
                 metrics=['accuracy'])
     return model
 
-def  train_model(X_train, Y_train):
+def  train_model(X_train, Y_train, X_test, Y_test):
     model = create_model()
     tensorboard = TensorBoard(log_dir='./logs')
     checkpoint = ModelCheckpoint("BrainTumorCNN",monitor="val_accuracy",save_best_only=True,mode='auto',verbose=1)
     reduce_lr = ReduceLROnPlateau(monitor="val_accuracy",factor= 0.3, patience= 2,min_delta=0.001,mode="auto", verbose= True)
     history = model.fit(X_train,Y_train,batch_size=batch_size,validation_split=0.1,epochs=epochs,verbose=1, callbacks=[tensorboard,checkpoint,reduce_lr])
-    loss, accuracy = model.evaluate(x_test, y_test)
+    loss, accuracy = model.evaluate(X_test, Y_test)
     print("Loss:", loss)
     print("Accuracy:", accuracy)
     return model
@@ -75,6 +75,6 @@ x_test,y_test = load_data(test_dir, labels)
 y_train = OneHotEncoding(labels,y_train)
 y_test = OneHotEncoding(labels,y_test)
 
-trained_model = train_model(x_train,y_train)
-print(prediction(trained_model))
+trained_model = train_model(x_train,y_train,x_test,y_test)
+#print(prediction(trained_model))
 save_model(trained_model)
